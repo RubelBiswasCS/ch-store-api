@@ -15,10 +15,16 @@ class Product(models.Model):
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
     
+    options = (
+        ('red', 'Red'),
+        ('black', 'Black'),
+        ('blue','Blue'),
+    )
+
     name = models.CharField(max_length=100)
     model = models.CharField(null=True,blank=True,max_length=50)
     brand = models.CharField(null=True,blank=True,max_length=50)
-    color = models.ForeignKey(Category,on_delete=models.PROTECT,default=1)
+    color = models.CharField(max_length=20,choices=options, default='black')
     unit_price = models.FloatField()
     current_stock = models.IntegerField(default=10,null=True,blank=True)
     image = models.FileField(blank=True,null=True,upload_to='products')
@@ -26,3 +32,4 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
