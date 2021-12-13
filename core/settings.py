@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'base.apps.BaseConfig',
     'api.apps.ApiConfig',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -134,7 +135,10 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
 }
 
 CORS_ALLOWED_ORIGINS = [
