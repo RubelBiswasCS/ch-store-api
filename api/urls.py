@@ -1,5 +1,5 @@
 from django.urls import path,include
-from .views import ProductList,ProductDetail
+from .views import ProductList,ProductDetail,BlacklistTokenUpdateView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -14,4 +14,6 @@ urlpatterns = [
 
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('signout/', BlacklistTokenUpdateView.as_view(),
+         name='signout')
 ]
