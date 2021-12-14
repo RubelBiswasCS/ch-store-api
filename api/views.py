@@ -1,11 +1,15 @@
-from base.models import Product
-from .serializers import ProductSerializer
+from base.models import Product,Cart
+from .serializers import ProductSerializer,CartSerializer
 from rest_framework import generics
+from rest_framework import serializers
 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+
+from rest_framework.fields import CurrentUserDefault
 
 class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -16,6 +20,14 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+class CartList(generics.ListCreateAPIView):
+    def get_queryset(self, *args, **kwargs):
+        qs = Cart.objects.all()
+        qs = qs.filter(user=self.request.user)
+        return qs
+        
+    # queryset = get_queryset()
+    serializer_class = CartSerializer
 
 class BlacklistTokenUpdateView(APIView):
     permission_classes = [AllowAny]

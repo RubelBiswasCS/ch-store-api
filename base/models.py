@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Color(models.Model):
     class Meta:
@@ -33,3 +34,18 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+class Cart(models.Model):
+    class Meta:
+        verbose_name = 'Cart'
+        verbose_name_plural = 'Carts'
+    
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    quantity = models.IntegerField(default=0, null=True, blank=True)
+    # date_created = models.DateTimeField(auto_now_add=True,blank=True)
+    # date_modified = models.DateTimeField(blank=True)
+    # completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        obj_name = self.user.username
+        return obj_name
