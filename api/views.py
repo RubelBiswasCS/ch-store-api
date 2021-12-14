@@ -8,8 +8,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.exceptions import ValidationError
 
-from rest_framework.fields import CurrentUserDefault
 
 class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -22,12 +22,12 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class CartList(generics.ListCreateAPIView):
     def get_queryset(self, *args, **kwargs):
-        if self.request.user.is_anonymous:
-            return {'user':"user is anonymous"}
-        qs = Cart.objects.all()
-        qs = qs.filter(user=self.request.user)
-        return qs
-        
+        if self.request.user.is_authenticated:
+            qs = Cart.objects.all()
+            qs = qs.filter(user=self.request.user)
+            return qs
+        else:
+            raise ValidationError({"error": ["You don't have enough permission."]})
     # queryset = get_queryset()
     serializer_class = CartSerializer
 
