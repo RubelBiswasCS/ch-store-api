@@ -22,6 +22,8 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class CartList(generics.ListCreateAPIView):
     def get_queryset(self, *args, **kwargs):
+        if self.request.user.is_anonymous:
+            return {'user':"user is anonymous"}
         qs = Cart.objects.all()
         qs = qs.filter(user=self.request.user)
         return qs
