@@ -11,3 +11,9 @@ class CartSerializer(serializers.ModelSerializer):
         model = Cart
         fields = ['product','quantity']
         depth=1
+
+class CartCreateSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    class Meta:
+        model = Cart
+        fields = ['user','product','quantity']
