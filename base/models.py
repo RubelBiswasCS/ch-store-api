@@ -39,13 +39,16 @@ class Cart(models.Model):
         verbose_name = 'Cart'
         verbose_name_plural = 'Carts'
     
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField(default=0, null=True, blank=True)
+    #quantity = models.IntegerField(blank=False)
     # date_created = models.DateTimeField(auto_now_add=True,blank=True)
     # date_modified = models.DateTimeField(blank=True)
     # completed = models.BooleanField(default=False)
 
     def __str__(self):
+        if not self.user:
+            return "Anonymous"
         obj_name = self.user.username
         return obj_name
