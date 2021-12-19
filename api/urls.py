@@ -4,7 +4,6 @@ from .views import (
     ProductDetail,
     CartList,
     CartDetail,
-    CartCreate,
     BlacklistTokenUpdateView
     )
 from rest_framework_simplejwt.views import (
@@ -19,7 +18,7 @@ urlpatterns = [
     path('',ProductList.as_view(),name="productslist"),
     path('product/<str:pk>/',ProductDetail.as_view(),name="productsdetail"),
     path('cart/',CartList.as_view(),name="cartlist"),
-    path('cart/create/', CartCreate.as_view(),name="cartcreate"),
+    # path('cart/create/', CartCreate.as_view(),name="cartcreate"),
     path('cart/<str:pk>/',CartDetail.as_view(),name="cartdetail"),
 
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
