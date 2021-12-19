@@ -4,7 +4,7 @@ from rest_framework import generics
 from rest_framework import serializers
 
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -20,20 +20,59 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-class CartCreate(generics.CreateAPIView):
-    queryset = Cart.objects.all()
-    serializer_class = CartCreateSerializer
+class CartList(APIView):
+    permission_classes = [IsAuthenticated]
 
-class CartList(generics.ListCreateAPIView):
-    def get_queryset(self, *args, **kwargs):
-        if self.request.user.is_authenticated:
-            qs = Cart.objects.all()
-            qs = qs.filter(user=self.request.user)
-            return qs
-        else:
-            raise ValidationError({"error": ["You don't have enough permission."]})
-    # queryset = get_queryset()
-    serializer_class = CartSerializer
+    def get(self, request, format=None):
+        carts = Cart.objects.filter(user=self.request.user)
+        serializer = CartSerializer(carts, many=True)
+        cart_data=[]
+        print(serializer.data)
+
+        for item in serializer.data:
+
+            product = Product.objects.get(pk=item['product'])
+            cart_data.append(self.pack_data(product,item['quantity']))
+            
+        return Response(cart_data)
+
+    def post(self, request, format=None):
+        serializer = CartSerializer(data=request.data,context={'request': self.request})
+
+        if serializer.is_valid():
+
+            serializer.save()
+            product = Product.objects.get(pk=serializer.data['product'])
+            item_data = self.pack_data(product,serializer.data['quantity'])
+
+            return Response(item_data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def pack_data(self,item,quantity):
+
+        return {
+                'id' : item.pk,
+                'name' : item.name,
+                'quantity':quantity,
+                'unit_price' : item.unit_price,
+            }
+
+
+# class CartCreate(generics.CreateAPIView):
+#     queryset = Cart.objects.all()
+#     serializer_class = CartCreateSerializer
+
+# class CartList(generics.ListCreateAPIView):
+#     def get_queryset(self, *args, **kwargs):
+#         if self.request.user.is_authenticated:
+#             qs = Cart.objects.all()
+#             qs = qs.filter(user=self.request.user)
+#             return qs
+#         else:
+#             raise ValidationError({"error": ["You don't have enough permission."]})
+#     # queryset = get_queryset()
+#     serializer_class = CartSerializer(depth=1)
 class CartDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self, *args, **kwargs):
         if self.request.user.is_authenticated:
