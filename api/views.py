@@ -9,10 +9,13 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.exceptions import ValidationError
 
+from rest_framework.throttling import UserRateThrottle
+
 from base.models import Product,Cart
 from .serializers import ProductSerializer,CartSerializer,CartCreateSerializer
 
-
+class CustomUserRateThrottle(UserRateThrottle):
+    rate= '1/second'
 
 class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -24,6 +27,7 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
 
 class CartList(APIView):
+    #throttle_classes = [CustomUserRateThrottle]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
@@ -43,7 +47,7 @@ class CartList(APIView):
         serializer = CartSerializer(data=request.data,context={'request': self.request})
 
         if serializer.is_valid():
-
+            #print(serializer.data)
             serializer.save()
             product = Product.objects.get(pk=serializer.data['product'])
             item_data = self.pack_data(product,serializer.data['quantity'])
@@ -81,7 +85,8 @@ class CartDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        cart_item = self.get_object(int(pk))
+        #print("pk type in delete",type(pk))
+        cart_item = self.get_object(pk)
         cart_item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
