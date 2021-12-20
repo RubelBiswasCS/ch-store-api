@@ -35,9 +35,6 @@ class Product(models.Model):
         return self.name
 
 class Cart(models.Model):
-    class Meta:
-        verbose_name = 'Cart'
-        verbose_name_plural = 'Carts'
     
     user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
@@ -46,7 +43,10 @@ class Cart(models.Model):
     # date_created = models.DateTimeField(auto_now_add=True,blank=True)
     # date_modified = models.DateTimeField(blank=True)
     # completed = models.BooleanField(default=False)
-
+    class Meta:
+        verbose_name = 'Cart'
+        verbose_name_plural = 'Carts'
+        unique_together = ["user", "product", "quantity"]
     def __str__(self):
         if not self.user:
             return "Anonymous"
