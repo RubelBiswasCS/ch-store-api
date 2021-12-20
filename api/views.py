@@ -1,14 +1,17 @@
-from base.models import Product,Cart
-from .serializers import ProductSerializer,CartSerializer,CartCreateSerializer
+from django.http import Http404
+
 from rest_framework import generics
 from rest_framework import serializers
-
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.exceptions import ValidationError
+
+from base.models import Product,Cart
+from .serializers import ProductSerializer,CartSerializer,CartCreateSerializer
+
 
 
 class ProductList(generics.ListCreateAPIView):
@@ -58,6 +61,19 @@ class CartList(APIView):
                 'unit_price' : item.unit_price,
             }
 
+class CartDetail(APIView):
+    permission_classes = [IsAuthenticated]
+    def get_object(self, pk):
+        try:
+            print(type(pk))
+            return Cart.objects.get(product_id=pk)
+        except Cart.DoesNotExist:
+            raise Http404
+
+    def delete(self, request, pk, format=None):
+        cart_item = self.get_object(int(pk))
+        cart_item.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 # class CartCreate(generics.CreateAPIView):
 #     queryset = Cart.objects.all()
@@ -73,15 +89,15 @@ class CartList(APIView):
 #             raise ValidationError({"error": ["You don't have enough permission."]})
 #     # queryset = get_queryset()
 #     serializer_class = CartSerializer(depth=1)
-class CartDetail(generics.RetrieveUpdateDestroyAPIView):
-    def get_queryset(self, *args, **kwargs):
-        if self.request.user.is_authenticated:
-            qs = Cart.objects.all()
-            qs = qs.filter(user=self.request.user)
-            return qs
-        else:
-            raise ValidationError({"error": ["You don't have enough permission."]})
-    serializer_class = CartCreateSerializer
+# class CartDetail(generics.RetrieveUpdateDestroyAPIView):
+#     def get_queryset(self, *args, **kwargs):
+#         if self.request.user.is_authenticated:
+#             qs = Cart.objects.all()
+#             qs = qs.filter(user=self.request.user)
+#             return qs
+#         else:
+#             raise ValidationError({"error": ["You don't have enough permission."]})
+#     serializer_class = CartCreateSerializer
 
 class BlacklistTokenUpdateView(APIView):
     permission_classes = [AllowAny]
