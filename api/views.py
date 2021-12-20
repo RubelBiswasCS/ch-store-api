@@ -70,6 +70,16 @@ class CartDetail(APIView):
         except Cart.DoesNotExist:
             raise Http404
 
+    def patch(self, request, pk):
+        cart_item = self.get_object(int(pk))
+        #print(request.data['quantity'])
+        serializer = CartSerializer(cart_item, data=request.data, partial=True)
+        #serializer = TestModelSerializer(testmodel_object, data=request.data, partial=True) # set partial=True to update a data partially
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data,status=status.HTTP_206_PARTIAL_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def delete(self, request, pk, format=None):
         cart_item = self.get_object(int(pk))
         cart_item.delete()
