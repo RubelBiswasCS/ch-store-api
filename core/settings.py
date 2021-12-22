@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 if DEBUG == False:
-    ALLOWED_HOSTS = ['travisswiss.pythonanywhere.com']
+    ALLOWED_HOSTS = ['travisswiss.pythonanywhere.com','ch-store.netlify.app']
 
 # Application definition
 
@@ -147,6 +147,7 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://ch-store.netlify.app"
 ]
 
 
