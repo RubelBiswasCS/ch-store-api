@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-y!&a#5@6gq_h^v-9j3@6r!=^776mo^7g21kguto1o6v3u+0=ox
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+if DEBUG == False:
+    ALLOWED_HOSTS = ['travisswiss.pythonanywhere.com']
 
 # Application definition
 
@@ -175,3 +176,7 @@ SIMPLE_JWT = {
 
     'JTI_CLAIM': 'jti',
 }
+
+if DEBUG == False:
+    import os
+    STATIC_ROOT = os.path.join(BASE_DIR, "static")
