@@ -34,7 +34,7 @@ class CartList(APIView):
         carts = Cart.objects.filter(user=self.request.user)
         serializer = CartSerializer(carts, many=True)
         cart_data=[]
-        print(serializer.data)
+        #print(serializer.data)
 
         for item in serializer.data:
 
@@ -47,11 +47,9 @@ class CartList(APIView):
         serializer = CartSerializer(data=request.data,context={'request': self.request})
 
         if serializer.is_valid():
-            #print(serializer.data)
             serializer.save()
             product = Product.objects.get(pk=serializer.data['product'])
             item_data = self.pack_data(product,serializer.data['quantity'])
-
             return Response(item_data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -69,7 +67,7 @@ class CartDetail(APIView):
     permission_classes = [IsAuthenticated]
     def get_object(self, pk):
         try:
-            print(type(pk))
+            #print(type(pk))
             return Cart.objects.get(product_id=pk)
         except Cart.DoesNotExist:
             raise Http404
