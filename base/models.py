@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from users.models import CustomUser
 
 class Color(models.Model):
     class Meta:
@@ -36,7 +36,7 @@ class Product(models.Model):
 
 class Cart(models.Model):
     
-    user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL,null=True)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField(default=0, null=True, blank=True)
     #quantity = models.IntegerField(blank=False)
