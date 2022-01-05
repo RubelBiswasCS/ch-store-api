@@ -1,3 +1,4 @@
+from django.db.models.query import QuerySet
 from django.http import Http404
 
 from rest_framework import generics
@@ -12,7 +13,9 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.throttling import UserRateThrottle
 
 from base.models import Product,Cart
-from .serializers import ProductSerializer,CartSerializer,CartCreateSerializer
+from users.models import Address
+from .serializers import ProductSerializer,CartSerializer,CartCreateSerializer,AddressSerializer
+
 
 class CustomUserRateThrottle(UserRateThrottle):
     rate= '1/second'
@@ -21,6 +24,9 @@ class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+class AddressList(generics.ListCreateAPIView):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
 
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
