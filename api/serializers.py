@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from base.models import Product,Cart
+from users.models import Address
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,3 +19,8 @@ class CartCreateSerializer(serializers.ModelSerializer):
         model = Cart
         fields = ['user','product','quantity']
         depth=1
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = '__all__'
