@@ -21,6 +21,7 @@ class CartCreateSerializer(serializers.ModelSerializer):
         depth=1
 
 class AddressSerializer(serializers.ModelSerializer):
+    customer = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Address
         fields = '__all__'
