@@ -12,7 +12,7 @@ class Order(models.Model):
     city = models.CharField(max_length=100)
     phone = models.CharField(max_length=100)
     postcode = models.CharField(max_length=50)
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     total_paid = models.DecimalField(max_digits=5,decimal_places=2)
     order_key = models.CharField(max_length=200)

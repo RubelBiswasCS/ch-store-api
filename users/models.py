@@ -35,7 +35,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=20,blank=True)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     objects = CustomUserManager()
@@ -58,7 +58,7 @@ class Address(models.Model):
     address_line = models.CharField(max_length=255)
     address_line2 = models.CharField(max_length=255)
     city = models.CharField(max_length=150)
-    created_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     default = models.BooleanField(default=False)
 
