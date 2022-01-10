@@ -37,7 +37,7 @@ class CartList(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        carts = Cart.objects.filter(user=self.request.user)
+        carts = Cart.items.filter(user=self.request.user)
         serializer = CartSerializer(carts, many=True)
         cart_data=[]
         #print(serializer.data)
