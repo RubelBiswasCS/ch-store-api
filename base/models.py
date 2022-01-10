@@ -53,7 +53,7 @@ class Cart(models.Model):
     class Meta:
         verbose_name = 'Cart'
         verbose_name_plural = 'Carts'
-        unique_together = ["user", "product", "quantity"]
+        unique_together = ["user", "product", "quantity", 'date_created']
 
     def __str__(self):
         if not self.user:
