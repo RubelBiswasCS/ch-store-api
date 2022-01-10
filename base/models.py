@@ -34,21 +34,29 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+class CartManager(models.Manager):
+    def get_queryset(self):
+        return super(CartManager, self).get_queryset().filter(completed=False)
+
 class Cart(models.Model):
     
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL,null=True)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField(default=0, null=True, blank=True)
-    #quantity = models.IntegerField(blank=False)
-    # date_created = models.DateTimeField(auto_now_add=True,blank=True)
-    # date_modified = models.DateTimeField(blank=True)
-    # completed = models.BooleanField(default=False)
+    date_created = models.DateTimeField(auto_now_add=True,null=True)
+    date_modified = models.DateTimeField(auto_now=True,null=True)
+    completed = models.BooleanField(default=False)
+
+    objects = models.Manager()
+    items = CartManager()
+
     class Meta:
         verbose_name = 'Cart'
         verbose_name_plural = 'Carts'
-        unique_together = ["user", "product", "quantity"]
+        unique_together = ["user", "product", "quantity", 'date_created']
+
     def __str__(self):
         if not self.user:
             return "Anonymous"
-        obj_name = self.user.username
+        obj_name = self.user.name
         return obj_name
