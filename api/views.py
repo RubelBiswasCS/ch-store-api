@@ -13,9 +13,29 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.throttling import UserRateThrottle
 
 from base.models import Product,Cart
+from orders.models import Order,OrderItem
 from users.models import Address
-from .serializers import ProductSerializer,CartSerializer,CartCreateSerializer,AddressSerializer
+from .serializers import ProductSerializer,CartSerializer,CartCreateSerializer,AddressSerializer,OrderSerializer
 
+class OrderList(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, format=None):
+        serializer = OrderSerializer(data=request.data,context={'request': self.request})
+
+        if serializer.is_valid():
+            order = serializer.save()
+            #print(serializer.data,order.id)
+            cart_items = Cart.items.filter(user=request.user)
+            #print(cart_items.first())
+            for item in cart_items:
+                OrderItem.objects.create(order=order,product=item.product,price=item.product.unit_price,quantity=item.quantity)
+                item.completed=True
+                item.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # queryset = Order.objects.all()
+    # serializer_class = OrderSerializer
 
 class CustomUserRateThrottle(UserRateThrottle):
     rate= '1/second'
@@ -43,7 +63,6 @@ class CartList(APIView):
         #print(serializer.data)
 
         for item in serializer.data:
-
             product = Product.objects.get(pk=item['product'])
             cart_data.append(self.pack_data(product,item['quantity']))
             
