@@ -13,9 +13,13 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.throttling import UserRateThrottle
 
 from base.models import Product,Cart
+from orders.models import Order,OrderItem
 from users.models import Address
-from .serializers import ProductSerializer,CartSerializer,CartCreateSerializer,AddressSerializer
+from .serializers import ProductSerializer,CartSerializer,CartCreateSerializer,AddressSerializer,OrderSerializer
 
+class OrderList(generics.ListCreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
 
 class CustomUserRateThrottle(UserRateThrottle):
     rate= '1/second'
