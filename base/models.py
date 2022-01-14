@@ -11,7 +11,7 @@ class Color(models.Model):
         return self.name
 
 class Product(models.Model):
-
+    # fields = [name, model, brand, color, unit_price, current_stock, image, details]
     class Meta:
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
@@ -39,7 +39,7 @@ class CartManager(models.Manager):
         return super(CartManager, self).get_queryset().filter(completed=False)
 
 class Cart(models.Model):
-    
+    #fields =[user,product,quantity,date_created,date_modified,completed]
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL,null=True)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField(default=0, null=True, blank=True)
