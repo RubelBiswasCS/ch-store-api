@@ -30,6 +30,7 @@ class CustomUserManager(BaseUserManager):
         return user
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    #fields = [email, name, phone, is_active, is_staff, created, updated, objects]
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=150)
     phone = models.CharField(max_length=20,blank=True)
@@ -51,6 +52,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.name
 
 class Address(models.Model):
+    # fields = [customer, full_name, phone, postcode, address_line, address_line2, city, created_at, updated_at, default ]
     customer = models.ForeignKey(CustomUser, verbose_name="Customer", on_delete=models.CASCADE)
     full_name = models.CharField(max_length=150)
     phone = models.CharField(max_length=50)
