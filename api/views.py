@@ -17,36 +17,9 @@ from orders.models import Order,OrderItem
 from users.models import Address
 from .serializers import ProductSerializer,CartSerializer,CartCreateSerializer,AddressSerializer,OrderSerializer
 
-class OrderList(APIView):
-    permission_classes = [IsAuthenticated]
-    def post(self, request, format=None):
-        serializer = OrderSerializer(data=request.data,context={'request': self.request})
-
-        if serializer.is_valid():
-            order = serializer.save()
-            #print(serializer.data,order.id)
-            cart_items = Cart.items.filter(user=request.user)
-            #print(cart_items.first())
-            for item in cart_items:
-                OrderItem.objects.create(order=order,product=item.product,price=item.product.unit_price,quantity=item.quantity)
-                item.completed=True
-                item.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    # queryset = Order.objects.all()
-    # serializer_class = OrderSerializer
-
-class CustomUserRateThrottle(UserRateThrottle):
-    rate= '1/second'
-
 class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-
-class AddressList(generics.ListCreateAPIView):
-    queryset = Address.objects.all()
-    serializer_class = AddressSerializer
 
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
@@ -113,6 +86,48 @@ class CartDetail(APIView):
         cart_item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class OrderList(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, format=None):
+        serializer = OrderSerializer(data=request.data,context={'request': self.request})
+
+        if serializer.is_valid():
+            order = serializer.save()
+            #print(serializer.data,order.id)
+            cart_items = Cart.items.filter(user=request.user)
+            #print(cart_items.first())
+            for item in cart_items:
+                OrderItem.objects.create(order=order,product=item.product,price=item.product.unit_price,quantity=item.quantity)
+                item.completed=True
+                item.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # queryset = Order.objects.all()
+    # serializer_class = OrderSerializer
+
+
+class AddressList(generics.ListCreateAPIView):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
+
+class CustomUserRateThrottle(UserRateThrottle):
+    rate= '1/second'
+
+class BlacklistTokenUpdateView(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = ()
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 # class CartCreate(generics.CreateAPIView):
 #     queryset = Cart.objects.all()
 #     serializer_class = CartCreateSerializer
@@ -137,15 +152,3 @@ class CartDetail(APIView):
 #             raise ValidationError({"error": ["You don't have enough permission."]})
 #     serializer_class = CartCreateSerializer
 
-class BlacklistTokenUpdateView(APIView):
-    permission_classes = [AllowAny]
-    authentication_classes = ()
-
-    def post(self, request):
-        try:
-            refresh_token = request.data["refresh_token"]
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-            return Response(status=status.HTTP_205_RESET_CONTENT)
-        except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
