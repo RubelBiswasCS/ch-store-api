@@ -16,6 +16,7 @@ from rest_framework_simplejwt.views import (
 app_name = "api"
 
 urlpatterns = [
+    path('user/',include('users.urls',namespace='users')),
     path('api-auth/', include('rest_framework.urls')),
     path('',ProductList.as_view(),name="productslist"),
     path('product/<str:pk>/',ProductDetail.as_view(),name="productsdetail"),
