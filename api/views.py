@@ -66,7 +66,7 @@ class CartDetail(APIView):
     def get_object(self, pk):
         try:
             #print(type(pk))
-            return Cart.items.get(product_id=pk)
+            return Cart.items.get(product_id=pk,user=self.request.user)
         except Cart.DoesNotExist:
             raise Http404
 
