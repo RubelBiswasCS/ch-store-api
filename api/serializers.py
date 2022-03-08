@@ -34,7 +34,10 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ['user','full_name','email','address1','address2','city','phone','postcode','total_paid','order_key','payment_method','billing_status']
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    order = OrderSerializer()
+    product = ProductSerializer()
     class Meta:
         model = OrderItem
         fields = ['order', 'product', 'price', 'quantity']
+       
 
