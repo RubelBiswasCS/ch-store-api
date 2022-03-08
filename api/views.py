@@ -1,3 +1,4 @@
+from urllib import response
 from django.db.models.query import QuerySet
 from django.http import Http404
 
@@ -15,7 +16,7 @@ from rest_framework.throttling import UserRateThrottle
 from base.models import Product,Cart
 from orders.models import Order,OrderItem
 from users.models import Address
-from .serializers import ProductSerializer,CartSerializer,CartCreateSerializer,AddressSerializer,OrderSerializer
+from .serializers import ProductSerializer,CartSerializer,CartCreateSerializer,AddressSerializer,OrderSerializer,OrderItemSerializer
 
 class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -89,6 +90,13 @@ class CartDetail(APIView):
 
 class OrderList(APIView):
     permission_classes = [IsAuthenticated]
+    def get(self,request):
+        
+        orders = OrderItem.objects.filter(order__user = self.request.user)
+        serializer = OrderItemSerializer(orders, many=True)
+        print(serializer.data)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
     def post(self, request, format=None):
         serializer = OrderSerializer(data=request.data,context={'request': self.request})
 

@@ -20,6 +20,12 @@ class Order(models.Model):
     order_key = models.CharField(max_length=200)
     payment_method = models.CharField(max_length=200,blank=True)
     billing_status = models.BooleanField(default=False)
+    
+    @property
+    def get_order_items(self):
+        items = self.items.all()
+        return items
+    
 
     class Meta:
         ordering = ("-created",)

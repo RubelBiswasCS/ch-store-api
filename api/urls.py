@@ -25,7 +25,8 @@ urlpatterns = [
     path('cart/<str:pk>/',CartDetail.as_view(),name="cartdetail"),
     path('user/address/', AddressList.as_view(),name="addresslist"),
     path('placeorder/',OrderList.as_view(),name="placeorder"),
-
+    path('getorder/',OrderList.as_view(),name="getorder"),
+    
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('signout/', BlacklistTokenUpdateView.as_view(),
