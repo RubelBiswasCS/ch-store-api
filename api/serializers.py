@@ -29,12 +29,16 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    order_items = serializers.SerializerMethodField(method_name='get_order_items')
     class Meta:
         model = Order
-        fields = ['user','full_name','email','address1','address2','city','phone','postcode','total_paid','order_key','payment_method','billing_status']
+        fields = ['user','full_name','email','address1','address2','city','phone','postcode','total_paid','order_key','payment_method','billing_status','order_items']
+
+    def get_order_items(self,obj):
+        return OrderItemSerializer(obj.get_order_items,many=True).data
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    order = OrderSerializer()
+    # order = OrderSerializer()
     product = ProductSerializer()
     class Meta:
         model = OrderItem
