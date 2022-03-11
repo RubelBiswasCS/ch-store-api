@@ -92,8 +92,10 @@ class OrderList(APIView):
     permission_classes = [IsAuthenticated]
     def get(self,request):
         
-        orders = OrderItem.objects.filter(order__user = self.request.user)
-        serializer = OrderItemSerializer(orders, many=True)
+        # orders = OrderItem.objects.filter(order__user = self.request.user)
+        # serializer = OrderItemSerializer(orders, many=True)
+        orders = Order.objects.filter(user = self.request.user)
+        serializer = OrderSerializer(orders, many=True)
         print(serializer.data)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
