@@ -30,18 +30,26 @@ class AddressSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     order_items = serializers.SerializerMethodField(method_name='get_order_items')
+    total_price = serializers.SerializerMethodField(method_name='get_total_price')
     class Meta:
         model = Order
-        fields = ['user','full_name','email','address1','address2','city','phone','postcode','total_paid','order_key','payment_method','billing_status','order_items']
+        fields = ['user','full_name','email','address1','address2','city','phone','postcode','total_paid','order_key','payment_method','billing_status','order_items','total_price']
 
     def get_order_items(self,obj):
         return OrderItemSerializer(obj.get_order_items,many=True).data
 
+    def get_total_price(self,obj):
+        return obj.get_total_price
+        
 class OrderItemSerializer(serializers.ModelSerializer):
     # order = OrderSerializer()
+    total_price = serializers.SerializerMethodField(method_name='get_total_price')
     product = ProductSerializer()
     class Meta:
         model = OrderItem
-        fields = ['order', 'product', 'price', 'quantity']
+        fields = ['order', 'product', 'price', 'quantity','total_price']
+
+    def  get_total_price(self,obj):
+        return obj. get_total_price
        
 

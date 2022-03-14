@@ -26,6 +26,12 @@ class Order(models.Model):
         items = self.items.all()
         return items
     
+    @property
+    def get_total_price(self):
+        items = self.items.all()
+        total_price=sum([item.price*item.quantity for item in items])
+
+        return total_price
 
     class Meta:
         ordering = ("-created",)
@@ -40,6 +46,11 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product,related_name="order_items",on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=5, decimal_places=2)
     quantity = models.PositiveBigIntegerField(default=1)
+
+    @property
+    def get_total_price(self):
+        total_price=self.price*self.quantity
+        return total_price
 
     def __str__(self):
         return str(self.id)
