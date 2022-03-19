@@ -94,9 +94,13 @@ class OrderList(APIView):
         
         # orders = OrderItem.objects.filter(order__user = self.request.user)
         # serializer = OrderItemSerializer(orders, many=True)
-        orders = Order.objects.filter(user = self.request.user)
+        print(f'{self.request.user} is_staff : {self.request.user.is_staff}')
+        if self.request.user.is_staff:
+            orders = Order.objects.all()
+        else:
+            orders = Order.objects.filter(user = self.request.user)
         serializer = OrderSerializer(orders, many=True)
-        print(serializer.data)
+        #print(serializer.data)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     def post(self, request, format=None):

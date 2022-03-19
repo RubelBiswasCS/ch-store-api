@@ -50,6 +50,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = ['order', 'product', 'price', 'quantity','total_price']
 
     def  get_total_price(self,obj):
-        return obj. get_total_price
+        return obj.get_total_price
        
 

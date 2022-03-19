@@ -29,7 +29,8 @@ class Order(models.Model):
     @property
     def get_total_price(self):
         items = self.items.all()
-        total_price=sum([item.price*item.quantity for item in items])
+        # total_price=sum([item.price*item.quantity for item in items])
+        total_price=sum([item.get_total_price for item in items])
 
         return total_price
 
