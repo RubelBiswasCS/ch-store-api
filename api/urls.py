@@ -8,11 +8,8 @@ from .views import (
     OrderList,
     BlacklistTokenUpdateView
     )
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 
+from users.views import MyTokenObtainPairView,TokenRefreshView
 app_name = "api"
 
 urlpatterns = [
@@ -27,7 +24,7 @@ urlpatterns = [
     path('placeorder/',OrderList.as_view(),name="placeorder"),
     path('getorder/',OrderList.as_view(),name="getorder"),
     
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('signout/', BlacklistTokenUpdateView.as_view(),
          name='signout')
